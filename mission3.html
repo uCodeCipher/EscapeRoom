@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mission 3 – Fake or Fact</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main>
+    <h1>Mission 3 – Fake or Fact?</h1>
+    <p>Spectra is spreading misinformation. Only one of the following news posts is real. Choose wisely.</p>
+
+    <section>
+      <h2>Post A</h2>
+      <p><strong>Claim:</strong> "Moderna had begun COVID-19 vaccine trials before 2019."
+      <br><em>(Source: circulating on social media and blogs)</em></p>
+      <p><strong>Image:</strong> Photo of a vaccine lab dated "2018"</p>
+    </section>
+
+    <section>
+      <h2>Post B</h2>
+      <p><strong>Claim:</strong> "Elon Musk resigned from the Trump administration on May 30, 2025, after disagreements over the tax reform bill."
+      <br><em>(Source: Reuters)</em></p>
+      <p><strong>Image:</strong> Elon Musk walking out of the White House gates</p>
+    </section>
+
+    <form id="quizForm">
+      <p><strong>Which post is REAL?</strong></p>
+      <label><input type="radio" name="post" value="A"> Post A</label><br>
+      <label><input type="radio" name="post" value="B"> Post B</label><br>
+      <button type="submit">Submit</button>
+    </form>
+
+    <p id="result"></p>
+  </main>
+
+  <script>
+    document.getElementById("quizForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const answer = document.querySelector('input[name="post"]:checked');
+      const result = document.getElementById("result");
+      if (!answer) {
+        result.textContent = "Please select an option.";
+      } else if (answer.value === "B") {
+        result.innerHTML = "Correct! Post B is true. <a href='mission4.html'>Continue to Mission 4</a>";
+      } else {
+        result.textContent = "That's not correct. Reevaluate the sources and try again.";
+      }
+    });
+  </script>
+</body>
+</html>
