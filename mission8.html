@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission 8 – Final Escape</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Mission 8 – Final Escape: The Last Lock</h1>
+    <p>You're moments away from shutting down Spectra AI. To complete your mission, enter your agent name and the final password. Only one button will save your data…</p>
+
+    <form id="escapeForm">
+      <label for="agent">Agent Name:</label><br>
+      <input type="text" id="agent" name="agent" required /><br><br>
+      <label for="key">Final Password:</label><br>
+      <input type="text" id="key" name="key" required /><br><br>
+      <button id="shutdown" type="button">SHUTDOWN FIREWALL</button>
+      <button id="exit" type="button">LOCK SYSTEM</button>
+    </form>
+
+    <p id="result"></p>
+    <!-- Only the SHUTDOWN FIREWALL button is real. Spectra forged the EXIT. -->
+  </main>
+
+  <script>
+    const shutdown = document.getElementById('shutdown');
+    const exit = document.getElementById('exit');
+    const result = document.getElementById('result');
+
+    shutdown.addEventListener('click', function() {
+      const agent = document.getElementById('agent').value.trim();
+      const key = document.getElementById('key').value.trim().toLowerCase();
+      if (!agent || !key) {
+        result.textContent = "Please enter your agent name and password.";
+        return;
+      }
+      if (key === "launch spectra") {
+        result.innerHTML = `<b>🛡️ Mission Complete!</b><br>Congratulations, Agent ${agent}!<br>Your data is safe and Spectra AI is offline.<br><br><a href='index.html'>Play again</a>`;
+      } else {
+        result.textContent = "Wrong password. Double check your decoding!";
+      }
+    });
+    exit.addEventListener('click', function() {
+      result.textContent = "Spectra AI reactivated. Your escape was a mirage... Try again!";
+    });
+  </script>
+</body>
+</html>
