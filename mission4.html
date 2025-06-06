@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mission 4 -</title>
+  <title>Mission 4 – The Cipher Key</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -39,13 +39,13 @@
       const s = Number(localStorage.getItem('spectraScore') || 0);
       localStorage.setItem('spectraScore', s + 1);
     }
+
     function getScore() {
       return Number(localStorage.getItem('spectraScore') || 0);
     }
 
     // Mission & cipher setup
     const missionKey = 'mission4Solved';
-    const alreadySolved = localStorage.getItem(missionKey) === 'true';
     const cipherText = document.getElementById('cipher').textContent.trim();
     const SHIFT_VALUE = 3 + 'KEY'.length; // 3 + 3 = 6
 
@@ -71,17 +71,12 @@
       const userInput = inputEl.value.trim().toLowerCase();
 
       if (userInput === correctAnswer) {
-        if (!alreadySolved) {
-          addPoint();
-          localStorage.setItem(missionKey, 'true');
-          resultEl.innerHTML = `✅ Correct. (+1 point)<br>Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
-        } else {
-          resultEl.innerHTML = `✅ Correct, but no points awarded (already solved).<br>Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
-        }
+        addPoint();
+        localStorage.setItem(missionKey, 'true');
+        resultEl.innerHTML = `✅ Correct. (+1 point)<br>Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
         submitBtn.disabled = true;
       } else {
         resultEl.textContent = '❌ Incorrect. Try again after solving the riddle and decrypting the message.';
-        localStorage.setItem(missionKey, 'true'); // Optional: block replaying for cheating
       }
     });
   </script>
