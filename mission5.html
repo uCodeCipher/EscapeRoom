@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mission 5 – Inspect the Code</title>
+  <title>Mission 5</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,14 +27,36 @@
   </main>
 
   <script>
+    history.pushState(null, '', location.href);
+    window.addEventListener('popstate', () => history.go(1));
+
+    function addPoint() {
+      const s = Number(localStorage.getItem('spectraScore') || 0);
+      localStorage.setItem('spectraScore', s + 1);
+    }
+    function getScore() {
+      return Number(localStorage.getItem('spectraScore') || 0);
+    }
+
+    const encrypted = 'zqruhpjlt';
+    const correctAnswer = encrypted.split('').map(c => String.fromCharCode(c.charCodeAt(0) - 5)).join('');
+    const missionKey = 'mission5Solved';
+
     document.getElementById("inspectForm").addEventListener("submit", function(event) {
       event.preventDefault();
-      const answer = document.getElementById("code").value.trim().toLowerCase();
+      const input = document.getElementById("code").value.trim().toLowerCase();
       const result = document.getElementById("result");
-      if (answer === "unlock-echo") {
-        result.innerHTML = "Correct. You revealed Spectra's secret. <a href='mission6.html'>Go to Mission 6</a>";
+      const submitButton = document.querySelector('#inspectForm button');
+
+      if (input === correctAnswer) {
+        if (!localStorage.getItem(missionKey)) {
+          addPoint();
+          localStorage.setItem(missionKey, 'true');
+        }
+        result.innerHTML = `✅ Correct. You revealed Spectra's secret. Current score: ${getScore()}<br><a href='mission6.html'>Go to Mission 6</a>`;
+        submitButton.disabled = true;
       } else {
-        result.textContent = "That's not the hidden code. Try inspecting the page source.";
+        result.textContent = "❌ That's not the hidden code. Try inspecting the page source.";
       }
     });
   </script>
