@@ -3,27 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mission 7</title>
+  <title>Mission 7 – The Cipher Chain</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
     <h1>Mission 7 – The Cipher Chain</h1>
-    <p>To break Spectra's last lock, decode this encrypted string step-by-step and find the final password:</p>
+    <p>To break Spectra's last lock, decode this encrypted string step&nbsp;by&nbsp;step and find the final password:</p>
 
     <div class="cipher">
-      <p><strong>Encrypted String:</strong></p>
-      <code>ZnhxenIgZXhhdG9lcw==</code>
+      <p><strong>Encrypted&nbsp;String:</strong></p>
+      <code id="encStr">ZnhxenIgZXhhdG9lcw==</code>
     </div>
 
     <ol>
       <li>Decode the string using Base64 and ChatGPT.</li>
       <li>Reverse the decoded result (read it backwards).</li>
-      <li>Apply a Caesar cipher with shift -5.</li>
+      <li>Apply a Caesar cipher with shift&nbsp;<strong>−5</strong>.</li>
       <li>Enter the final answer (two words, no capitals) below.</li>
     </ol>
 
-    <form id="cipherForm">
+    <form id="cipherForm" autocomplete="off">
       <label for="cipher">Final answer:</label><br>
       <input type="text" id="cipher" name="cipher" required />
       <button type="submit">Submit</button>
@@ -33,39 +33,88 @@
   </main>
 
   <script>
+    /* --------------------------------------------------
+       Block browser back navigation
+    -------------------------------------------------- */
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
-    function addPoint() {
+    /* --------------------------------------------------
+       Score helpers
+    -------------------------------------------------- */
+    const addPoint = () => {
       const s = Number(localStorage.getItem('spectraScore') || 0);
       localStorage.setItem('spectraScore', s + 1);
+    };
+    const getScore = () => Number(localStorage.getItem('spectraScore') || 0);
+
+    /* --------------------------------------------------
+       Obfuscated answer generator
+    -------------------------------------------------- */
+    const missionKey   = 'mission7Solved';
+    const base64Str    = document.getElementById('encStr').textContent.trim();
+
+    // Build the answer at runtime so it isn't visible as plaintext
+    const buildAnswer = () => {
+      // Step 1: Base‑64 decode (built‑in atob)
+      let decoded = atob(base64Str);
+
+      // Step 2: Reverse string
+      decoded = decoded.split('').reverse().join('');
+
+      // Step 3: Caesar shift –5 (only letters)
+      const shifted = [...decoded].map(ch => {
+        if (/[a-z]/i.test(ch)) {
+          const base = ch <= 'Z' ? 65 : 97;
+          return String.fromCharCode((ch.charCodeAt(0) - base - 5 + 26) % 26 + base);
+        }
+        return ch;
+      }).join('');
+
+      return shifted.toLowerCase().trim();
+    };
+
+    const correctAnswer = buildAnswer();
+
+    /* --------------------------------------------------
+       DOM references
+    -------------------------------------------------- */
+    const form      = document.getElementById('cipherForm');
+    const inputEl   = document.getElementById('cipher');
+    const submitBtn = form.querySelector('button');
+    const resultEl  = document.getElementById('result');
+
+    /* --------------------------------------------------
+       Initial solved check
+    -------------------------------------------------- */
+    const alreadySolved = localStorage.getItem(missionKey) === 'true';
+
+    const showSolved = (earned) => {
+      const ptsMsg = earned ? '+1 point' : 'no points';
+      resultEl.innerHTML = `✅ Well done, Agent! Cipher chain broken (${ptsMsg}).<br>Current score: ${getScore()}<br><a href='mission8.html'>Continue to Mission 8</a>`;
+      submitBtn.disabled = true;
+    };
+
+    if (alreadySolved) {
+      showSolved(false);
     }
-    function getScore() {
-      return Number(localStorage.getItem('spectraScore') || 0);
-    }
 
-    const encryptedCode = 'qdvjdymtbx fqlr';
-    const correctAnswer = encryptedCode.split('').map(c => {
-      return c === ' ' ? ' ' : String.fromCharCode(c.charCodeAt(0) + 5);
-    }).join('').trim();
+    /* --------------------------------------------------
+       Submit handler
+    -------------------------------------------------- */
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const userAns = inputEl.value.trim().toLowerCase();
 
-    const missionKey = 'mission7Solved';
-
-    document.getElementById('cipherForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-      const cipherInput = document.getElementById("cipher").value.trim().toLowerCase();
-      const result = document.getElementById("result");
-      const submitButton = document.querySelector('#cipherForm button');
-
-      if (cipherInput === correctAnswer) {
-        if (!localStorage.getItem(missionKey)) {
+      if (userAns === correctAnswer) {
+        const earnPt = !alreadySolved;
+        if (earnPt) {
           addPoint();
           localStorage.setItem(missionKey, 'true');
         }
-        result.innerHTML = `✅ Well done, Agent! Cipher chain broken. Current score: ${getScore()}<br><a href='mission8.html'>Continue to Mission 8</a>`;
-        submitButton.disabled = true;
+        showSolved(earnPt);
       } else {
-        result.textContent = "❌ Incorrect. Follow all steps carefully and try again.";
+        resultEl.textContent = '❌ Incorrect. Follow all steps carefully and try again.';
       }
     });
   </script>
