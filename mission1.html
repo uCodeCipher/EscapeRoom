@@ -28,7 +28,7 @@
     <section>
       <h2>Email C</h2>
       <p><strong>From:</strong> rewards@mail.roblox.com<br>
-      <strong>Subject:</strong> 🎁 You’ve earned a bonus reward from Roblox Premium</p>
+      <strong>Subject:</strong> 🏱 You’ve earned a bonus reward from Roblox Premium</p>
       <p>As a Premium member, you’ve earned a special bonus item. <a href="https://www.roblox.com/promo/reward?id=9082">View your reward</a>.</p>
     </section>
 
@@ -44,41 +44,48 @@
   </main>
 
   <script>
-    /* ---- Prevent back navigation ---- */
+    // Prevent back navigation
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
-    /* ---- Score helpers ---- */
-    function addPoint(){const s=Number(localStorage.getItem('spectraScore')||0);localStorage.setItem('spectraScore',s+1);} 
-    function getScore(){return Number(localStorage.getItem('spectraScore')||0);} 
+    // Score helpers
+    function addPoint() {
+      const s = Number(localStorage.getItem('spectraScore') || 0);
+      localStorage.setItem('spectraScore', s + 1);
+    }
+    function getScore() {
+      return Number(localStorage.getItem('spectraScore') || 0);
+    }
 
-    /* ---- Obfuscated correct answer ---- */
+    // Obfuscated correct answer
     const masked = 85; // 66 ("B") XOR 23 = 85
     const correctAnswer = String.fromCharCode(masked ^ 23); // returns "B"
 
-    // Check if player has already tried this mission before (lock firstTry)
-    let firstTry = !(localStorage.getItem('mission1Tried') === 'true');
+    const missionKey = 'mission1Tried';
+    let firstTry = !(localStorage.getItem(missionKey) === 'true');
 
     document.getElementById('quizForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const choice = document.querySelector('input[name="email"]:checked');
       const result = document.getElementById('result');
-      if(!choice){ result.textContent='Please select an option.'; return; }
-
-      // If user makes any submission, even wrong, we set mission1Tried = true
-      if (!localStorage.getItem('mission1Tried')) {
-        localStorage.setItem('mission1Tried', 'true');
-        firstTry = false;
+      if (!choice) {
+        result.textContent = 'Please select an option.';
+        return;
       }
 
-      if(choice.value === correctAnswer){
-        if(firstTry){ addPoint(); }
+      if (choice.value === correctAnswer) {
+        if (firstTry) {
+          addPoint();
+          localStorage.setItem(missionKey, 'true');
+        }
         const earned = firstTry ? '+1 point' : 'no points';
         result.innerHTML = `✅ Correct (${earned}). Current score: ${getScore()}<br><a href='mission2.html'>Continue to Mission 2</a>`;
-        document.querySelectorAll('input[name="email"]').forEach(el=>el.disabled=true);
+        document.querySelectorAll('input[name="email"]').forEach(el => el.disabled = true);
         e.target.querySelector('button').disabled = true;
       } else {
-        result.textContent = '❌ Not quite. Look at the sender and the link – try again.';
+        localStorage.setItem(missionKey, 'true');
+        firstTry = false;
+        result.textContent = '❌ Not quite. Look at the sender and the link – try again.';
       }
     });
   </script>
