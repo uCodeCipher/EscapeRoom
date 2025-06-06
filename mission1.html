@@ -57,8 +57,8 @@
       return Number(localStorage.getItem('spectraScore') || 0);
     }
 
-    // Obfuscated correct answer
-    const masked = 85; // 66 ("B") XOR 23 = 85
+   
+    const masked = 85; 
     const correctAnswer = String.fromCharCode(masked ^ 23); // returns "B"
 
     const missionKey = 'mission1Tried';
