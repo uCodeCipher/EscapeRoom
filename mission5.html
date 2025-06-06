@@ -38,11 +38,11 @@
       return Number(localStorage.getItem('spectraScore') || 0);
     }
 
-   
-    const encrypted = 'zqruhpjlt';
+    
+    const encrypted = 'zsqrthp-jmts';
     const correctAnswer = encrypted
       .split('')
-      .map(c => String.fromCharCode(c.charCodeAt(0) + 5))
+      .map(c => String.fromCharCode(c.charCodeAt(0) - 5))
       .join('');
 
     const missionKey = 'mission5Solved';
