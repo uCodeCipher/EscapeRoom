@@ -13,16 +13,12 @@
 
     <section>
       <h2>Post A</h2>
-      <p><strong>Claim:</strong> "Moderna had begun COVID-19 vaccine trials before 2019."
-      <br><em>(Source: circulating on social media and blogs)</em></p>
-      <p><strong>Image:</strong> Photo of a vaccine lab dated "2018"</p>
+      <img src="assets/post_a.png" alt="Post A image" width="300">
     </section>
 
     <section>
       <h2>Post B</h2>
-      <p><strong>Claim:</strong> "Elon Musk resigned from the Trump administration on May 30, 2025, after disagreements over the tax reform bill."
-      <br><em>(Source: Reuters)</em></p>
-      <p><strong>Image:</strong> Elon Musk walking out of the White House gates</p>
+      <img src="assets/post_b.png" alt="Post B image" width="300">
     </section>
 
     <form id="quizForm">
@@ -49,7 +45,6 @@
       return Number(localStorage.getItem('spectraScore') || 0);
     }
 
-    
     const encodedChar = 'G';
     const correctAnswer = String.fromCharCode(encodedChar.charCodeAt(0) - 5); 
 
