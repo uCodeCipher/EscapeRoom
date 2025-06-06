@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission 6 – The IP Trap</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Mission 6 – The IP Trap</h1>
+    <p>Spectra’s network log reveals multiple devices connected across internal nodes. Only one device shouldn’t be there.</p>
+    <p>Which one?</p>
+
+    <pre class="ip-log">
+Connection Log – Spectra Node Alpha
+
+[08:00:01] 10.0.0.12       – MAC: AA:BB:CC:11:22:33 – Country: GR
+[08:00:03] 192.168.1.104   – MAC: 00:1A:2B:3C:4D:5E – Country: GR
+[08:00:04] 172.16.2.9      – MAC: 02:15:44:77:88:99 – Country: GR
+[08:00:06] 10.0.0.13       – MAC: AA:BB:CC:11:22:34 – Country: GR
+[08:00:08] 192.168.1.105   – MAC: 00:1A:2B:3C:4D:5F – Country: GR
+[08:00:10] 192.168.1.106   – MAC: 00:1A:2B:3C:4D:60 – Country: GR
+[08:00:13] 172.16.2.10     – MAC: 02:15:44:77:88:9A – Country: GR
+[08:00:18] 192.168.1.107   – MAC: 00:1A:2B:3C:4D:61 – Country: GR
+[08:00:22] 172.16.2.11     – MAC: 02:15:44:77:88:9B – Country: GR
+[08:00:31] 10.0.0.255      – MAC: AA:BB:CC:11:22:FF – Country: US
+    </pre>
+
+    <form id="ipForm">
+      <label for="ip">Which IP is the intruder?</label><br>
+      <input type="text" id="ip" name="ip" placeholder="e.g., 10.0.0.255" required />
+      <button type="submit">Submit</button>
+    </form>
+
+    <p id="result"></p>
+  </main>
+
+  <script>
+    document.getElementById("ipForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const ip = document.getElementById("ip").value.trim();
+      const result = document.getElementById("result");
+      if (ip === "10.0.0.255") {
+        result.innerHTML = "Correct. The broadcast impostor has been found. <a href='mission7.html'>Continue to Mission 7</a>";
+      } else {
+        result.textContent = "That's not the anomaly. Think about IP behavior and location.";
+      }
+    });
+  </script>
+</body>
+</html>
