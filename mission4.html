@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mission 4 – The Cipher Key</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main>
+    <h1>Mission 4 – The Cipher Key</h1>
+    <p>Spectra locked part of the system with a simple cipher. Solve the riddle to find the key, then decrypt the message.</p>
+
+    <div class="riddle">
+      <p><strong>Riddle:</strong> "The number of sides on a triangle plus the number of letters in ‘KEY’."</p>
+    </div>
+
+    <div class="cipher-text">
+      <p><strong>Encrypted Message:</strong><br>
+      Wklv lv wkh sdvvzrug brx qhhg: wlsjn1wyhnyl</p>
+    </div>
+
+    <form id="cipherForm">
+      <label for="answer">Enter the decoded password:</label><br>
+      <input type="text" id="answer" name="answer" required />
+      <button type="submit">Submit</button>
+    </form>
+
+    <p id="result"></p>
+  </main>
+
+  <script>
+    document.getElementById("cipherForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const answer = document.getElementById("answer").value.trim().toLowerCase();
+      const result = document.getElementById("result");
+      if (answer === "crypt1center") {
+        result.innerHTML = "Correct. The lock is disabled. <a href='mission5.html'>Proceed to Mission 5</a>";
+      } else {
+        result.textContent = "Incorrect. Try again after solving the riddle and decrypting the message.";
+      }
+    });
+  </script>
+</body>
+</html>
