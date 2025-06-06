@@ -27,7 +27,7 @@
   </main>
 
   <script>
-    // Block the browser back button to avoid accidental navigation
+    // Prevent back button
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
@@ -39,21 +39,23 @@
     const getScore = () => Number(localStorage.getItem('spectraScore') || 0);
 
     // ---------- Mission‑specific data ----------
-    const missionKey    = 'mission5Solved';
-    const correctAnswer = 'unlock-echo';   // what the player must type (case‑insensitive)
+    const missionKey = 'mission5Solved';
+    const correctAnswer = 'unlock-echo'; // case-insensitive
 
-    // ---------- DOM refs ----------
-    const form        = document.getElementById('inspectForm');
-    const codeInput   = document.getElementById('code');
-    const result      = document.getElementById('result');
-    const submitBtn   = form.querySelector('button');
+    // ---------- DOM references ----------
+    const form = document.getElementById('inspectForm');
+    const codeInput = document.getElementById('code');
+    const result = document.getElementById('result');
+    const submitBtn = form.querySelector('button');
 
-    // If already solved, show success immediately
+    // 🟢 Check if already solved
     if (localStorage.getItem(missionKey)) {
       result.innerHTML = `✅ Already solved. Current score: ${getScore()}<br><a href="mission6.html">Go to Mission 6</a>`;
       submitBtn.disabled = true;
+      codeInput.disabled = true;
     }
 
+    // 🟠 Form submission logic
     form.addEventListener('submit', e => {
       e.preventDefault();
       const input = codeInput.value.trim().toLowerCase();
@@ -65,6 +67,7 @@
         }
         result.innerHTML = `✅ Correct. You revealed Spectra's secret. Current score: ${getScore()}<br><a href="mission6.html">Go to Mission 6</a>`;
         submitBtn.disabled = true;
+        codeInput.disabled = true;
       } else {
         result.textContent = "❌ That's not the hidden code. Try inspecting the page source (F12).";
       }
