@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mission 6 – The IP Trap</title>
+  <title>Mission 6</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -37,14 +37,40 @@ Connection Log – Spectra Node Alpha
   </main>
 
   <script>
+    history.pushState(null, '', location.href);
+    window.addEventListener('popstate', () => history.go(1));
+
+    function addPoint() {
+      const s = Number(localStorage.getItem('spectraScore') || 0);
+      localStorage.setItem('spectraScore', s + 1);
+    }
+    function getScore() {
+      return Number(localStorage.getItem('spectraScore') || 0);
+    }
+
+    const encoded = '65,59,46,50,45,45,47,45,50,50';
+    const correctAnswer = encoded.split(',').map(n => String.fromCharCode(parseInt(n) + 3)).join('');
+    const missionKey = 'mission6Tried';
+
     document.getElementById("ipForm").addEventListener("submit", function(event) {
       event.preventDefault();
       const ip = document.getElementById("ip").value.trim();
       const result = document.getElementById("result");
-      if (ip === "10.0.0.255") {
-        result.innerHTML = "Correct. The broadcast impostor has been found. <a href='mission7.html'>Continue to Mission 7</a>";
+      const submitButton = document.querySelector('#ipForm button');
+
+      const alreadyTried = localStorage.getItem(missionKey) === 'true';
+
+      if (ip === correctAnswer) {
+        if (!alreadyTried) {
+          addPoint();
+          localStorage.setItem(missionKey, 'true');
+        }
+        const earned = !alreadyTried ? '+1 point' : 'no points';
+        result.innerHTML = `✅ Correct (${earned}). The broadcast impostor has been found.<br>Current score: ${getScore()}<br><a href='mission7.html'>Continue to Mission 7</a>`;
+        submitButton.disabled = true;
       } else {
-        result.textContent = "That's not the anomaly. Think about IP behavior and location.";
+        localStorage.setItem(missionKey, 'true');
+        result.textContent = "❌ That's not the anomaly. Think about IP behavior and location.";
       }
     });
   </script>
