@@ -38,12 +38,12 @@
       return Number(localStorage.getItem('spectraScore') || 0);
     }
 
-    // Correct answer is "unlock-echo" but encrypted (charCode + 5):
-    const encrypted = 'zqruhpjlt'; // should be charCode - 5 to get correct
+    // Correct answer: unlock-echo, obfuscated with -5 shift
+    const encrypted = 'zqruhpjlt';
     const correctAnswer = encrypted
       .split('')
       .map(c => String.fromCharCode(c.charCodeAt(0) + 5))
-      .join(''); // decrypts to "unlock-echo"
+      .join('');
 
     const missionKey = 'mission5Solved';
 
