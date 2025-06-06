@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mission 5</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Mission 5 – Inspect the Code</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main>
@@ -17,8 +17,8 @@
 
     <!-- Great job, Agent. Use this code to proceed: unlock-echo -->
 
-    <form id="inspectForm">
-      <label for="code">Enter the hidden code:</label><br>
+    <form id="inspectForm" autocomplete="off">
+      <label for="code">Enter the hidden code:</label><br />
       <input type="text" id="code" name="code" required />
       <button type="submit">Submit</button>
     </form>
@@ -27,41 +27,46 @@
   </main>
 
   <script>
+    // Block the browser back button to avoid accidental navigation
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
-    function addPoint() {
+    // ---------- Utility helpers ----------
+    const addPoint = () => {
       const s = Number(localStorage.getItem('spectraScore') || 0);
       localStorage.setItem('spectraScore', s + 1);
+    };
+    const getScore = () => Number(localStorage.getItem('spectraScore') || 0);
+
+    // ---------- Mission‑specific data ----------
+    const missionKey    = 'mission5Solved';
+    const correctAnswer = 'unlock-echo';   // what the player must type (case‑insensitive)
+
+    // ---------- DOM refs ----------
+    const form        = document.getElementById('inspectForm');
+    const codeInput   = document.getElementById('code');
+    const result      = document.getElementById('result');
+    const submitBtn   = form.querySelector('button');
+
+    // If already solved, show success immediately
+    if (localStorage.getItem(missionKey)) {
+      result.innerHTML = `✅ Already solved. Current score: ${getScore()}<br><a href="mission6.html">Go to Mission 6</a>`;
+      submitBtn.disabled = true;
     }
-    function getScore() {
-      return Number(localStorage.getItem('spectraScore') || 0);
-    }
 
-    
-    const encrypted = 'zsqrthp-jmts';
-    const correctAnswer = encrypted
-      .split('')
-      .map(c => String.fromCharCode(c.charCodeAt(0) - 5))
-      .join('');
-
-    const missionKey = 'mission5Solved';
-
-    document.getElementById("inspectForm").addEventListener("submit", function(event) {
-      event.preventDefault();
-      const input = document.getElementById("code").value.trim().toLowerCase();
-      const result = document.getElementById("result");
-      const submitButton = document.querySelector('#inspectForm button');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const input = codeInput.value.trim().toLowerCase();
 
       if (input === correctAnswer) {
         if (!localStorage.getItem(missionKey)) {
           addPoint();
           localStorage.setItem(missionKey, 'true');
         }
-        result.innerHTML = `✅ Correct. You revealed Spectra's secret. Current score: ${getScore()}<br><a href='mission6.html'>Go to Mission 6</a>`;
-        submitButton.disabled = true;
+        result.innerHTML = `✅ Correct. You revealed Spectra's secret. Current score: ${getScore()}<br><a href="mission6.html">Go to Mission 6</a>`;
+        submitBtn.disabled = true;
       } else {
-        result.textContent = "❌ That's not the hidden code. Try inspecting the page source.";
+        result.textContent = "❌ That's not the hidden code. Try inspecting the page source (F12).";
       }
     });
   </script>
