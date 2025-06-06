@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mission 7 – The Cipher Chain</title>
+  <title>Mission 7</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -33,14 +33,36 @@
   </main>
 
   <script>
+    history.pushState(null, '', location.href);
+    window.addEventListener('popstate', () => history.go(1));
+
+    function addPoint() {
+      const s = Number(localStorage.getItem('spectraScore') || 0);
+      localStorage.setItem('spectraScore', s + 1);
+    }
+    function getScore() {
+      return Number(localStorage.getItem('spectraScore') || 0);
+    }
+
+    const encryptedCode = [103, 102, 122, 115, 109, 104, 37, 36, 119, 122, 106, 119, 102, 32];
+    const correctAnswer = encryptedCode.map(c => String.fromCharCode(c - 5)).join('').trim();
+    const missionKey = 'mission7Solved';
+
     document.getElementById('cipherForm').addEventListener('submit', function(event) {
       event.preventDefault();
       const cipherInput = document.getElementById("cipher").value.trim().toLowerCase();
       const result = document.getElementById("result");
-      if (cipherInput === "launch spectra") {
-        result.innerHTML = "Well done, Agent! Cipher chain broken. <a href='mission8.html'>Continue to Mission 8</a>";
+      const submitButton = document.querySelector('#cipherForm button');
+
+      if (cipherInput === correctAnswer) {
+        if (!localStorage.getItem(missionKey)) {
+          addPoint();
+          localStorage.setItem(missionKey, 'true');
+        }
+        result.innerHTML = `✅ Well done, Agent! Cipher chain broken. Current score: ${getScore()}<br><a href='mission8.html'>Continue to Mission 8</a>`;
+        submitButton.disabled = true;
       } else {
-        result.textContent = "Incorrect. Follow all steps carefully and try again.";
+        result.textContent = "❌ Incorrect. Follow all steps carefully and try again.";
       }
     });
   </script>
