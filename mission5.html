@@ -38,8 +38,13 @@
       return Number(localStorage.getItem('spectraScore') || 0);
     }
 
-    const encrypted = 'zqruhpjlt';
-    const correctAnswer = encrypted.split('').map(c => String.fromCharCode(c.charCodeAt(0) - 5)).join('');
+    // Correct answer is "unlock-echo" but encrypted (charCode + 5):
+    const encrypted = 'zqruhpjlt'; // should be charCode - 5 to get correct
+    const correctAnswer = encrypted
+      .split('')
+      .map(c => String.fromCharCode(c.charCodeAt(0) + 5))
+      .join(''); // decrypts to "unlock-echo"
+
     const missionKey = 'mission5Solved';
 
     document.getElementById("inspectForm").addEventListener("submit", function(event) {
