@@ -48,8 +48,8 @@ Connection Log – Spectra Node Alpha
       return Number(localStorage.getItem('spectraScore') || 0);
     }
 
-    const encoded = '65,59,46,50,45,45,47,45,50,50';
-    const correctAnswer = encoded.split(',').map(n => String.fromCharCode(parseInt(n) + 3)).join('');
+    const encoded = '55,45,46,45,45,45,48,48,50,50';
+    const correctAnswer = encoded.split(',').map(n => String.fromCharCode(parseInt(n))).join('');
     const missionKey = 'mission6Tried';
 
     document.getElementById("ipForm").addEventListener("submit", function(event) {
