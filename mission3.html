@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mission 3 – Fake or Fact</title>
+  <title>Mission 3</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -36,16 +36,50 @@
   </main>
 
   <script>
+    // Prevent back navigation
+    history.pushState(null, '', location.href);
+    window.addEventListener('popstate', () => history.go(1));
+
+    // Score helpers
+    function addPoint() {
+      const s = Number(localStorage.getItem('spectraScore') || 0);
+      localStorage.setItem('spectraScore', s + 1);
+    }
+    function getScore() {
+      return Number(localStorage.getItem('spectraScore') || 0);
+    }
+
+    
+    const encodedChar = 'G';
+    const correctAnswer = String.fromCharCode(encodedChar.charCodeAt(0) - 5); 
+
+    const missionKey = 'mission3Tried';
+    let firstTry = !(localStorage.getItem(missionKey) === 'true');
+
     document.getElementById("quizForm").addEventListener("submit", function(event) {
       event.preventDefault();
       const answer = document.querySelector('input[name="post"]:checked');
       const result = document.getElementById("result");
       if (!answer) {
         result.textContent = "Please select an option.";
-      } else if (answer.value === "B") {
-        result.innerHTML = "Correct! Post B is true. <a href='mission4.html'>Continue to Mission 4</a>";
+        return;
+      }
+
+      if (!localStorage.getItem(missionKey)) {
+        localStorage.setItem(missionKey, 'true');
+        firstTry = true;
       } else {
-        result.textContent = "That's not correct. Reevaluate the sources and try again.";
+        firstTry = false;
+      }
+
+      if (answer.value === correctAnswer) {
+        if (firstTry) addPoint();
+        const earned = firstTry ? '+1 point' : 'no points';
+        result.innerHTML = `✅ Correct (${earned}). Current score: ${getScore()}<br><a href='mission4.html'>Continue to Mission 4</a>`;
+        document.querySelectorAll('input[name="post"]').forEach(el => el.disabled = true);
+        document.querySelector('button').disabled = true;
+      } else {
+        result.textContent = "❌ That's not correct. Reevaluate the sources and try again.";
       }
     });
   </script>
