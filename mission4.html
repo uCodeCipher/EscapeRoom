@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mission 4</title>
+  <title>Mission 4 – The Cipher Key</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -17,11 +17,11 @@
 
     <div class="cipher-text">
       <p><strong>Encrypted Message:</strong><br>
-      Wklv lv wkh sdvvzrug brx qhhg: wlsjn1wyhnyl</p>
+      Wklv lv wkh sdvvzrug brx qhhg: <span id="cipher">wlsjn1wyhnyl</span></p>
     </div>
 
-    <form id="cipherForm">
-      <label for="answer">Enter the decoded password:</label><br>
+    <form id="cipherForm" autocomplete="off">
+      <label for="answer">Enter the decoded password:</label><br />
       <input type="text" id="answer" name="answer" required />
       <button type="submit">Submit</button>
     </form>
@@ -30,36 +30,60 @@
   </main>
 
   <script>
+    // Block the browser back button to avoid accidental navigation
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
-    function addPoint() {
+    // ---------- Utility helpers ----------
+    const addPoint = () => {
       const s = Number(localStorage.getItem('spectraScore') || 0);
       localStorage.setItem('spectraScore', s + 1);
+    };
+
+    const getScore = () => Number(localStorage.getItem('spectraScore') || 0);
+
+    // ---------- Cipher logic ----------
+    const missionKey  = 'mission4Solved';
+    const SHIFT_VALUE = 3 + 'KEY'.length;             // 3 sides + 3 letters = 6
+    const cipherText  = document.getElementById('cipher').textContent.trim();
+
+    // Classic Caesar decode helper (handles upper & lower case, leaves digits/punct)
+    const caesarDecode = (text, shift) =>
+      [...text].map(ch => {
+        if (/[a-z]/i.test(ch)) {
+          const base = ch <= 'Z' ? 65 : 97;
+          return String.fromCharCode(
+            (ch.charCodeAt(0) - base + shift) % 26 + base
+          );
+        }
+        return ch; // digits, punctuation, spaces stay as‑is
+      }).join('');
+
+    const correctAnswer = caesarDecode(cipherText, SHIFT_VALUE).toLowerCase();
+
+    // ---------- Form handling ----------
+    const form        = document.getElementById('cipherForm');
+    const result      = document.getElementById('result');
+    const answerInput = document.getElementById('answer');
+    const submitBtn   = form.querySelector('button');
+
+    // If the player already solved this mission earlier, show immediate feedback
+    if (localStorage.getItem(missionKey)) {
+      result.innerHTML = `✅ Already solved. Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
+      submitBtn.disabled = true;
     }
 
-    function getScore() {
-      return Number(localStorage.getItem('spectraScore') || 0);
-    }
-
-    const encrypted = 'j|~uw0h~jshwq'; 
-    const correctAnswer = encrypted.split('').map(c => String.fromCharCode(c.charCodeAt(0) - 5)).join('');
-
-    const missionKey = 'mission4Solved';
-
-    document.getElementById("cipherForm").addEventListener("submit", function(event) {
-      event.preventDefault();
-      const input = document.getElementById("answer").value.trim().toLowerCase();
-      const result = document.getElementById("result");
-      const submitButton = document.querySelector('#cipherForm button');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const input = answerInput.value.trim().toLowerCase();
 
       if (input === correctAnswer) {
         if (!localStorage.getItem(missionKey)) {
           addPoint();
           localStorage.setItem(missionKey, 'true');
         }
-        result.innerHTML = `✅ Correct. The lock is disabled. Current score: ${getScore()}<br><a href='mission5.html'>Proceed to Mission 5</a>`;
-        submitButton.disabled = true;
+        result.innerHTML = `✅ Correct. The lock is disabled. Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
+        submitBtn.disabled = true;
       } else {
         result.textContent = "❌ Incorrect. Try again after solving the riddle and decrypting the message.";
       }
