@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mission 4 – The Cipher Key</title>
+  <title>Mission 4</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -69,11 +69,16 @@
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       const userInput = inputEl.value.trim().toLowerCase();
+      const alreadySolved = localStorage.getItem(missionKey) === 'true';
 
       if (userInput === correctAnswer) {
-        addPoint();
-        localStorage.setItem(missionKey, 'true');
-        resultEl.innerHTML = `✅ Correct. (+1 point)<br>Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
+        if (!alreadySolved) {
+          addPoint();
+          localStorage.setItem(missionKey, 'true');
+          resultEl.innerHTML = `✅ Correct. (+1 point)<br>Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
+        } else {
+          resultEl.innerHTML = `✅ Correct, but no points awarded (already solved).<br>Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
+        }
         submitBtn.disabled = true;
       } else {
         resultEl.textContent = '❌ Incorrect. Try again after solving the riddle and decrypting the message.';
