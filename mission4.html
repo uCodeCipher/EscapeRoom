@@ -41,8 +41,8 @@
       return Number(localStorage.getItem('spectraScore') || 0);
     }
 
-    const encrypted = 'j|~uw0h~jshwq';
-    const correctAnswer = encrypted.split('').map(c => String.fromCharCode(c.charCodeAt(0) - 5)).join('');
+    const encrypted = 'crypt1center';
+    const correctAnswer = encrypted.toLowerCase();
 
     const missionKey = 'mission4Solved';
 
