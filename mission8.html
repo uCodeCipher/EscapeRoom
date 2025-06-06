@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mission 8 – Final </title>
+  <title>Mission 8 – Final Escape: The Last Lock</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -41,7 +41,9 @@
     };
     const getScore = () => Number(localStorage.getItem('spectraScore') || 0);
 
-    
+    /* --------------------------------------------------
+       Obfuscated password ("launch spectra") – codes +5
+    -------------------------------------------------- */
     const codes = [113, 102, 122, 115, 104, 109, 37, 120, 117, 106, 104, 121, 119, 102];
     const correctKey = codes.map(c => String.fromCharCode(c - 5)).join('');
 
@@ -58,11 +60,11 @@
     -------------------------------------------------- */
     const missionKey = 'mission8Completed';
 
-    // winning button index is stored Base64 to avoid obvious exposure
-    const winIndex = parseInt(atob('MQ=='), 10); 
+    // Winning button index (0 = first) stored Base64 to hide it
+    const winIndex = parseInt(atob('MA=='), 10); // "0" -> 0 (first button wins)
 
     /* --------------------------------------------------
-       If already completed, show summary and lock UI
+       Already completed?
     -------------------------------------------------- */
     const showFinalSuccess = (agent) => {
       resultEl.innerHTML = `<b>🛡️ Mission Complete!</b><br>Congratulations, Agent ${agent}!<br>Your data is safe and Spectra AI is offline.<br><br><strong>Final Score: ${getScore()}</strong><br><br><a href='index.html'>Play again</a>`;
@@ -75,20 +77,16 @@
     }
 
     /* --------------------------------------------------
-       Password input – enable buttons when correct
+       Enable buttons when password correct
     -------------------------------------------------- */
     keyInput.addEventListener('input', () => {
       const ok = keyInput.value.trim().toLowerCase() === correctKey;
       buttons.forEach(btn => btn.disabled = !ok);
-      if (ok) {
-        resultEl.textContent = 'Password accepted. Choose your final move…';
-      } else {
-        resultEl.textContent = '';
-      }
+      resultEl.textContent = ok ? 'Password accepted. Choose your final move…' : '';
     });
 
     /* --------------------------------------------------
-       Button logic (hidden which wins)
+       Button click logic
     -------------------------------------------------- */
     buttons.forEach(btn => btn.addEventListener('click', () => {
       const agent = agentInput.value.trim();
@@ -100,7 +98,7 @@
       const idx = Number(btn.dataset.idx);
 
       if (idx === winIndex) {
-        // SUCCESS branch
+        // SUCCESS branch (first button wins now)
         if (!localStorage.getItem(missionKey)) {
           addPoint();
           localStorage.setItem(missionKey, 'true');
