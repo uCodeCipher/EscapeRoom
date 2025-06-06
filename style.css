@@ -1,0 +1,90 @@
+body {
+  background: linear-gradient(135deg, #020b14 0%, #071a28 70%, #003c3c 100%);
+  color: #d0ffe4;
+  font-family: 'Fira Mono', 'Consolas', monospace;
+  min-height: 100vh;
+  margin: 0;
+}
+
+main {
+  background: rgba(10, 28, 44, 0.90);
+  border-radius: 1.2rem;
+  box-shadow: 0 0 32px 8px #000b1e;
+  padding: 2rem 2.2rem 2rem 2.2rem;
+  margin: 2rem auto;
+  max-width: 480px;
+  text-align: center;
+}
+
+h1 {
+  color: #16ff60;
+  font-size: 2.2rem;
+  letter-spacing: 1px;
+  margin-bottom: 1.2rem;
+}
+
+h2 {
+  color: #0df6f6;
+  font-size: 1.3rem;
+  margin-top: 1.2rem;
+}
+
+label, p, li {
+  font-size: 1.07rem;
+  line-height: 1.4;
+}
+
+input[type="text"] {
+  border-radius: 6px;
+  border: 1.5px solid #16ff60;
+  padding: 0.45rem 1rem;
+  font-size: 1rem;
+  margin: 0.4rem 0;
+  background: #021412;
+  color: #aaffbb;
+}
+
+button {
+  background: linear-gradient(90deg, #002f16 60%, #0df6f6 100%);
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  margin: 0.5rem 0.6rem;
+  font-size: 1.05rem;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 10px #0126116c;
+  cursor: pointer;
+  transition: background 0.23s, box-shadow 0.23s;
+}
+button:hover {
+  background: linear-gradient(90deg, #16ff60 60%, #0df6f6 100%);
+  box-shadow: 0 4px 22px #00ffcc44;
+}
+
+pre, code {
+  background: #092025;
+  color: #0df6f6;
+  padding: 0.2rem 0.7rem;
+  border-radius: 5px;
+  font-size: 1.01rem;
+}
+
+ol {
+  text-align: left;
+  margin: 1.1rem auto 2rem auto;
+  padding-left: 1.3em;
+  max-width: 420px;
+}
+
+input[type="radio"] {
+  accent-color: #0df6f6;
+}
+
+@media (max-width: 600px) {
+  main { padding: 1.2rem 0.5rem; }
+  h1 { font-size: 1.35rem; }
+  h2 { font-size: 1.05rem; }
+  ol { font-size: 0.95rem; }
+}
