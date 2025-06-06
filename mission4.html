@@ -27,25 +27,30 @@
     </form>
 
     <p id="result"></p>
-    <button id="resetMission" style="display:none; margin-top:1rem;">Reset Mission</button>
   </main>
 
   <script>
-    // Prevent the back button
+    // --------------------------------------------------
+    //  Prevent navigating back to the previous page
+    // --------------------------------------------------
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
-    // ---------- Helpers ----------
+    // --------------------------------------------------
+    //  Helper functions for scorekeeping
+    // --------------------------------------------------
     const addPoint = () => {
       const s = Number(localStorage.getItem('spectraScore') || 0);
       localStorage.setItem('spectraScore', s + 1);
     };
     const getScore = () => Number(localStorage.getItem('spectraScore') || 0);
 
-    // ---------- Cipher details ----------
-    const missionKey   = 'mission4Solved';
-    const SHIFT_VALUE  = 3 + 'KEY'.length; // 6
-    const cipherText   = document.getElementById('cipher').textContent.trim();
+    // --------------------------------------------------
+    //  Cipher specifics
+    // --------------------------------------------------
+    const missionKey  = 'mission4Solved';
+    const SHIFT_VALUE = 3 + 'KEY'.length;          // 6
+    const cipherText  = document.getElementById('cipher').textContent.trim();
 
     const caesarDecode = (text, shift) =>
       [...text].map(ch => {
@@ -53,33 +58,36 @@
           const base = ch <= 'Z' ? 65 : 97;
           return String.fromCharCode((ch.charCodeAt(0) - base + shift) % 26 + base);
         }
-        return ch;
+        return ch; // leave digits / punctuation
       }).join('');
 
-    const correctAnswer = caesarDecode(cipherText, SHIFT_VALUE).toLowerCase(); // "crypt1center"
+    const correctAnswer = caesarDecode(cipherText, SHIFT_VALUE).toLowerCase(); // crypt1center
 
-    // ---------- DOM refs ----------
+    // --------------------------------------------------
+    //  DOM references
+    // --------------------------------------------------
     const form        = document.getElementById('cipherForm');
     const answerInput = document.getElementById('answer');
-    const result      = document.getElementById('result');
     const submitBtn   = form.querySelector('button');
-    const resetBtn    = document.getElementById('resetMission');
+    const result      = document.getElementById('result');
 
-    // ---------- State check ----------
-    const storedVal       = localStorage.getItem(missionKey);
-    const alreadySolved   = storedVal === correctAnswer; // solved *only* if value === current answer
+    // --------------------------------------------------
+    //  Check if mission was already solved (for this answer)
+    // --------------------------------------------------
+    const alreadySolved = localStorage.getItem(missionKey) === correctAnswer;
 
     const showSolved = () => {
       result.innerHTML = `✅ Correct. The lock is disabled. Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
       submitBtn.disabled = true;
-      resetBtn.style.display = 'inline-block';
     };
 
     if (alreadySolved) {
       showSolved();
     }
 
-    // ---------- Handlers ----------
+    // --------------------------------------------------
+    //  Form submit handler
+    // --------------------------------------------------
     form.addEventListener('submit', e => {
       e.preventDefault();
       const input = answerInput.value.trim().toLowerCase();
@@ -87,22 +95,12 @@
       if (input === correctAnswer) {
         if (!alreadySolved) {
           addPoint();
+          localStorage.setItem(missionKey, correctAnswer);
         }
-        localStorage.setItem(missionKey, correctAnswer);
         showSolved();
       } else {
-        result.textContent = "❌ Incorrect. Try again after solving the riddle and decrypting the message.";
+        result.textContent = '❌ Incorrect. Try again after solving the riddle and decrypting the message.';
       }
-    });
-
-    // --- Optional reset for playtesting ---
-    resetBtn.addEventListener('click', () => {
-      localStorage.removeItem(missionKey);
-      submitBtn.disabled = false;
-      answerInput.value = '';
-      result.textContent = '';
-      resetBtn.style.display = 'none';
-      answerInput.focus();
     });
   </script>
 </body>
