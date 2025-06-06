@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission 7 – The Cipher Chain</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Mission 7 – The Cipher Chain</h1>
+    <p>To break Spectra's last lock, decode this encrypted string step-by-step and find the final password:</p>
+
+    <div class="cipher">
+      <p><strong>Encrypted String:</strong></p>
+      <code>ZnhxenIgZXhhdG9lcw==</code>
+    </div>
+
+    <ol>
+      <li>Decode the string using Base64 and ChatGPT.</li>
+      <li>Reverse the decoded result (read it backwards).</li>
+      <li>Apply a Caesar cipher with shift -5.</li>
+      <li>Enter the final answer (two words, no capitals) below.</li>
+    </ol>
+
+    <form id="cipherForm">
+      <label for="cipher">Final answer:</label><br>
+      <input type="text" id="cipher" name="cipher" required />
+      <button type="submit">Submit</button>
+    </form>
+
+    <p id="result"></p>
+  </main>
+
+  <script>
+    document.getElementById('cipherForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const cipherInput = document.getElementById("cipher").value.trim().toLowerCase();
+      const result = document.getElementById("result");
+      if (cipherInput === "launch spectra") {
+        result.innerHTML = "Well done, Agent! Cipher chain broken. <a href='mission8.html'>Continue to Mission 8</a>";
+      } else {
+        result.textContent = "Incorrect. Follow all steps carefully and try again.";
+      }
+    });
+  </script>
+</body>
+</html>
