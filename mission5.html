@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission 5 – Inspect the Code</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Mission 5 – Inspect the Code</h1>
+    <p>Spectra has hidden a clue inside the page. The message you decoded earlier warned you about a suspicious element. But it’s invisible... unless you know the right key.</p>
+
+    <div class="hint">
+      <p><strong>Clue:</strong> "The inspector sees more than the visitor. But only if you press the forbidden key of twelve."</p>
+    </div>
+
+    <!-- Great job, Agent. Use this code to proceed: unlock-echo -->
+
+    <form id="inspectForm">
+      <label for="code">Enter the hidden code:</label><br>
+      <input type="text" id="code" name="code" required />
+      <button type="submit">Submit</button>
+    </form>
+
+    <p id="result"></p>
+  </main>
+
+  <script>
+    document.getElementById("inspectForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const answer = document.getElementById("code").value.trim().toLowerCase();
+      const result = document.getElementById("result");
+      if (answer === "unlock-echo") {
+        result.innerHTML = "Correct. You revealed Spectra's secret. <a href='mission6.html'>Go to Mission 6</a>";
+      } else {
+        result.textContent = "That's not the hidden code. Try inspecting the page source.";
+      }
+    });
+  </script>
+</body>
+</html>
