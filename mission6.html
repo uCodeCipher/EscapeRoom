@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mission 6</title>
+  <title>Mission 6 – The IP Trap</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,7 +27,7 @@ Connection Log – Spectra Node Alpha
 [08:00:31] 10.0.0.255      – MAC: AA:BB:CC:11:22:FF – Country: US
     </pre>
 
-    <form id="ipForm">
+    <form id="ipForm" autocomplete="off">
       <label for="ip">Which IP is the intruder?</label><br>
       <input type="text" id="ip" name="ip" placeholder="e.g., 10.0.0.255" required />
       <button type="submit">Submit</button>
@@ -37,40 +37,66 @@ Connection Log – Spectra Node Alpha
   </main>
 
   <script>
+    // --------------------------------------------------
+    //  Keep the player from going back
+    // --------------------------------------------------
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
-    function addPoint() {
+    // --------------------------------------------------
+    //  Score helpers
+    // --------------------------------------------------
+    const addPoint = () => {
       const s = Number(localStorage.getItem('spectraScore') || 0);
       localStorage.setItem('spectraScore', s + 1);
+    };
+    const getScore = () => Number(localStorage.getItem('spectraScore') || 0);
+
+    // --------------------------------------------------
+    //  Mission‑specific constants
+    // --------------------------------------------------
+    const correctAnswer = '10.0.0.255';     // Broadcast IP from the U.S.
+    const missionKey    = 'mission6Solved'; // mark mission solved once
+
+    // --------------------------------------------------
+    //  DOM references
+    // --------------------------------------------------
+    const form      = document.getElementById('ipForm');
+    const ipInput   = document.getElementById('ip');
+    const submitBtn = form.querySelector('button');
+    const resultEl  = document.getElementById('result');
+
+    // --------------------------------------------------
+    //  Initial solved check
+    // --------------------------------------------------
+    const alreadySolved = localStorage.getItem(missionKey) === 'true';
+
+    const showSolved = (earnedPoint) => {
+      const pointsText = earnedPoint ? '+1 point' : 'no points';
+      resultEl.innerHTML = `✅ Correct (${pointsText}). The broadcast impostor has been found.<br>Current score: ${getScore()}<br><a href='mission7.html'>Continue to Mission 7</a>`;
+      submitBtn.disabled = true;
+    };
+
+    if (alreadySolved) {
+      showSolved(false); // page reload → no extra points
     }
-    function getScore() {
-      return Number(localStorage.getItem('spectraScore') || 0);
-    }
 
-    const encoded = '55,45,46,45,45,45,48,48,50,50';
-    const correctAnswer = encoded.split(',').map(n => String.fromCharCode(parseInt(n))).join('');
-    const missionKey = 'mission6Tried';
-
-    document.getElementById("ipForm").addEventListener("submit", function(event) {
-      event.preventDefault();
-      const ip = document.getElementById("ip").value.trim();
-      const result = document.getElementById("result");
-      const submitButton = document.querySelector('#ipForm button');
-
-      const alreadyTried = localStorage.getItem(missionKey) === 'true';
+    // --------------------------------------------------
+    //  Form submit handler
+    // --------------------------------------------------
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const ip = ipInput.value.trim();
 
       if (ip === correctAnswer) {
-        if (!alreadyTried) {
+        const earnedPoint = !alreadySolved;
+        if (earnedPoint) {
           addPoint();
           localStorage.setItem(missionKey, 'true');
         }
-        const earned = !alreadyTried ? '+1 point' : 'no points';
-        result.innerHTML = `✅ Correct (${earned}). The broadcast impostor has been found.<br>Current score: ${getScore()}<br><a href='mission7.html'>Continue to Mission 7</a>`;
-        submitButton.disabled = true;
+        showSolved(earnedPoint);
       } else {
-        localStorage.setItem(missionKey, 'true');
-        result.textContent = "❌ That's not the anomaly. Think about IP behavior and location.";
+        resultEl.textContent = '❌ That\'s not the anomaly. Think about IP behaviour and location.';
       }
     });
   </script>
