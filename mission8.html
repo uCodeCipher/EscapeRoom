@@ -3,76 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mission 8</title>
+  <title>Mission 8 – Final </title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
     <h1>Mission 8 – Final Escape: The Last Lock</h1>
-    <p>You're moments away from shutting down Spectra AI. To complete your mission, enter your agent name and the final password. Only one button will save your data…</p>
+    <p>You're moments away from shutting down Spectra AI. Provide your <em>agent name</em> and the <strong>password you uncovered in Mission&nbsp;7</strong>. Once accepted, choose wisely&hellip;</p>
 
-    <form id="escapeForm">
+    <form id="escapeForm" autocomplete="off">
       <label for="agent">Agent Name:</label><br>
       <input type="text" id="agent" name="agent" required /><br><br>
+
       <label for="key">Final Password:</label><br>
       <input type="text" id="key" name="key" required /><br><br>
-      <button id="shutdown" type="button" disabled>SHUTDOWN FIREWALL</button>
-      <button id="exit" type="button" disabled>LOCK SYSTEM</button>
+
+      <button data-idx="0" type="button" disabled>SHUTDOWN FIREWALL</button>
+      <button data-idx="1" type="button" disabled>LOCK SYSTEM</button>
     </form>
 
     <p id="result"></p>
   </main>
 
   <script>
+    /* --------------------------------------------------
+       Prevent back navigation
+    -------------------------------------------------- */
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
-    const shutdown = document.getElementById('shutdown');
-    const exit = document.getElementById('exit');
-    const result = document.getElementById('result');
-    const passInput = document.getElementById('key');
+    /* --------------------------------------------------
+       Score helpers
+    -------------------------------------------------- */
+    const addPoint = () => {
+      const s = Number(localStorage.getItem('spectraScore') || 0);
+      localStorage.setItem('spectraScore', s + 1);
+    };
+    const getScore = () => Number(localStorage.getItem('spectraScore') || 0);
+
+    
+    const codes = [113, 102, 122, 115, 104, 109, 37, 120, 117, 106, 104, 121, 119, 102];
+    const correctKey = codes.map(c => String.fromCharCode(c - 5)).join('');
+
+    /* --------------------------------------------------
+       DOM refs
+    -------------------------------------------------- */
+    const keyInput   = document.getElementById('key');
     const agentInput = document.getElementById('agent');
-    const missionDoneKey = 'mission8Completed';
+    const resultEl   = document.getElementById('result');
+    const buttons    = document.querySelectorAll('#escapeForm button');
 
-    function getScore() {
-      return Number(localStorage.getItem('spectraScore') || 0);
+    /* --------------------------------------------------
+       Mission completion tracking
+    -------------------------------------------------- */
+    const missionKey = 'mission8Completed';
+
+    // winning button index is stored Base64 to avoid obvious exposure
+    const winIndex = parseInt(atob('MQ=='), 10); 
+
+    /* --------------------------------------------------
+       If already completed, show summary and lock UI
+    -------------------------------------------------- */
+    const showFinalSuccess = (agent) => {
+      resultEl.innerHTML = `<b>🛡️ Mission Complete!</b><br>Congratulations, Agent ${agent}!<br>Your data is safe and Spectra AI is offline.<br><br><strong>Final Score: ${getScore()}</strong><br><br><a href='index.html'>Play again</a>`;
+      buttons.forEach(btn => btn.disabled = true);
+    };
+
+    if (localStorage.getItem(missionKey) === 'true') {
+      const storedAgent = localStorage.getItem('mission8Agent') || 'Unknown';
+      showFinalSuccess(storedAgent);
     }
 
-    const code = [113, 102, 122, 120, 109, 37, 119, 90, 100, 119, 117, 102, 117];
-    const correctKey = code.map(c => String.fromCharCode(c - 5)).join('').trim();
-
-    if (localStorage.getItem(missionDoneKey) === 'true') {
-      shutdown.disabled = true;
-      exit.disabled = true;
-      result.innerHTML = `✅ Mission already completed.<br>Your data is safe.<br>Final Score: ${getScore()}<br><a href='index.html'>Play again</a>`;
-    }
-
-    passInput.addEventListener('input', () => {
-      const userKey = passInput.value.trim().toLowerCase();
-      if (userKey === correctKey) {
-        shutdown.disabled = false;
-        exit.disabled = false;
+    /* --------------------------------------------------
+       Password input – enable buttons when correct
+    -------------------------------------------------- */
+    keyInput.addEventListener('input', () => {
+      const ok = keyInput.value.trim().toLowerCase() === correctKey;
+      buttons.forEach(btn => btn.disabled = !ok);
+      if (ok) {
+        resultEl.textContent = 'Password accepted. Choose your final move…';
       } else {
-        shutdown.disabled = true;
-        exit.disabled = true;
+        resultEl.textContent = '';
       }
     });
 
-    shutdown.addEventListener('click', function () {
+    /* --------------------------------------------------
+       Button logic (hidden which wins)
+    -------------------------------------------------- */
+    buttons.forEach(btn => btn.addEventListener('click', () => {
       const agent = agentInput.value.trim();
       if (!agent) {
-        result.textContent = "Please enter your agent name.";
+        resultEl.textContent = 'Please enter your agent name.';
         return;
       }
-      localStorage.setItem(missionDoneKey, 'true');
-      shutdown.disabled = true;
-      exit.disabled = true;
-      result.innerHTML = `<b>🛡️ Mission Complete!</b><br>Congratulations, Agent ${agent}!<br>Your data is safe and Spectra AI is offline.<br><br><strong>Final Score: ${getScore()}</strong><br><br><a href='index.html'>Play again</a>`;
-    });
 
-    exit.addEventListener('click', function () {
-      result.textContent = "❌ Spectra AI reactivated. Your data has been leaked to the Dark Web. Try again!";
-    });
+      const idx = Number(btn.dataset.idx);
+
+      if (idx === winIndex) {
+        // SUCCESS branch
+        if (!localStorage.getItem(missionKey)) {
+          addPoint();
+          localStorage.setItem(missionKey, 'true');
+          localStorage.setItem('mission8Agent', agent);
+        }
+        showFinalSuccess(agent);
+      } else {
+        // FAILURE branch
+        resultEl.innerHTML = `❌ Wrong choice, Agent ${agent}. Spectra AI was reactivated.<br>Score so far: ${getScore()}`;
+        buttons.forEach(b => b.disabled = true);
+      }
+    }));
   </script>
 </body>
 </html>
