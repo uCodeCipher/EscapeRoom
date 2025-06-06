@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mission 4</title>
+  <title>Mission 4 – </title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -30,24 +30,24 @@
   </main>
 
   <script>
-    // Block browser back navigation
+    // Prevent browser back navigation
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
-    // Score helpers
+    // Score handling
     function addPoint() {
-      const s = Number(localStorage.getItem('spectraScore') || 0);
-      localStorage.setItem('spectraScore', s + 1);
+      const score = Number(localStorage.getItem('spectraScore') || 0);
+      localStorage.setItem('spectraScore', score + 1);
     }
 
     function getScore() {
       return Number(localStorage.getItem('spectraScore') || 0);
     }
 
-    // Mission & cipher setup
+    // Cipher setup
     const missionKey = 'mission4Solved';
+    const SHIFT_VALUE = 3 + 'KEY'.length; // 6
     const cipherText = document.getElementById('cipher').textContent.trim();
-    const SHIFT_VALUE = 3 + 'KEY'.length; // 3 + 3 = 6
 
     const caesarDecode = (text, shift) =>
       [...text].map(ch => {
@@ -60,7 +60,7 @@
 
     const correctAnswer = caesarDecode(cipherText, SHIFT_VALUE).toLowerCase(); // crypt1center
 
-    // Form handler
+    // Form elements
     const form = document.getElementById('cipherForm');
     const inputEl = document.getElementById('answer');
     const resultEl = document.getElementById('result');
@@ -82,6 +82,7 @@
         submitBtn.disabled = true;
       } else {
         resultEl.textContent = '❌ Incorrect. Try again after solving the riddle and decrypting the message.';
+        // 🟡 ΣΗΜΑΝΤΙΚΟ: ΔΕΝ αποθηκεύουμε το missionKey εδώ!
       }
     });
   </script>
