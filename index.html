@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🕵️‍♂️ SPECTRA: Cyber Escape</title>
+  <title>SPECTRA: Cyber Escape</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main>
-    <h1>🕵️‍♂️ SPECTRA: Cyber Escape</h1>
+    <h1>SPECTRA: Cyber Escape</h1>
     <p>Your mission briefing is ready. Click <strong>Start</strong> to begin and dismantle Spectra AI.</p>
 
     <a class="start-btn" href="mission1.html">START MISSION</a>
 
     <p class="warning" style="margin-top:1.4rem; color:#ff9c5b; font-size:1.05rem;">
-      ⚠️ Don’t rush! Only first-try correct answers earn points. Wrong picks give no points and slow you down. Stay sharp.
+      ⚠️ Don’t rush! Only first‑try correct answers earn points. Wrong picks give no points and slow you down. Stay sharp.
     </p>
 
     <hr>
@@ -32,28 +32,15 @@
     </ol>
     <p class="note">*Missions unlock sequentially. Complete each one to advance.*</p>
 
-    <button id="resetScore" style="margin-top:1.4rem; background:#330000;">RESET SCORE</button>
-    <p id="scoreDisplay" style="margin-top:0.6rem;"></p>
+    <p id="scoreDisplay" style="margin-top:0.8rem;"></p>
   </main>
 
   <script>
-    /* ---- Score helpers ---- */
-    function getScore(){return Number(localStorage.getItem('spectraScore')||0);} 
-    function resetScore(){localStorage.removeItem('spectraScore');}
+    /* ---- Initialise score to 0 each time user lands on index ---- */
+    localStorage.setItem('spectraScore', 0);
 
-    // show current score on load
-    const scoreOut = document.getElementById('scoreDisplay');
-    scoreOut.textContent = 'Current score: ' + getScore();
-
-    document.getElementById('resetScore').addEventListener('click', () => {
-      const current = getScore();
-      if (current === 0) { alert('Score is already 0.'); return; }
-      if (confirm('Reset score to 0 and start again?')) {
-        resetScore();
-        scoreOut.textContent = 'Current score: 0';
-        alert('Score reset!');
-      }
-    });
+    /* ---- Display current (reset) score ---- */
+    document.getElementById('scoreDisplay').textContent = 'Current score: 0';
   </script>
 </body>
 </html>
