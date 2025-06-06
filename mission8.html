@@ -34,13 +34,17 @@
     const agentInput = document.getElementById('agent');
     const missionDoneKey = 'mission8Completed';
 
+    function getScore() {
+      return Number(localStorage.getItem('spectraScore') || 0);
+    }
+
     const code = [113, 102, 122, 120, 109, 37, 119, 90, 100, 119, 117, 102, 117];
     const correctKey = code.map(c => String.fromCharCode(c - 5)).join('').trim();
 
     if (localStorage.getItem(missionDoneKey) === 'true') {
       shutdown.disabled = true;
       exit.disabled = true;
-      result.innerHTML = `✅ Mission already completed.<br>Your data is safe. <a href='index.html'>Play again</a>`;
+      result.innerHTML = `✅ Mission already completed.<br>Your data is safe.<br>Final Score: ${getScore()}<br><a href='index.html'>Play again</a>`;
     }
 
     passInput.addEventListener('input', () => {
@@ -60,10 +64,10 @@
         result.textContent = "Please enter your agent name.";
         return;
       }
-      result.innerHTML = `<b>🛡️ Mission Complete!</b><br>Congratulations, Agent ${agent}!<br>Your data is safe and Spectra AI is offline.<br><br><a href='index.html'>Play again</a>`;
       localStorage.setItem(missionDoneKey, 'true');
       shutdown.disabled = true;
       exit.disabled = true;
+      result.innerHTML = `<b>🛡️ Mission Complete!</b><br>Congratulations, Agent ${agent}!<br>Your data is safe and Spectra AI is offline.<br><br><strong>Final Score: ${getScore()}</strong><br><br><a href='index.html'>Play again</a>`;
     });
 
     exit.addEventListener('click', function () {
