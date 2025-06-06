@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mission 4 – The Cipher Key</title>
+  <title>Mission 4</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -30,14 +30,35 @@
   </main>
 
   <script>
+    history.pushState(null, '', location.href);
+    window.addEventListener('popstate', () => history.go(1));
+
+    function addPoint() {
+      const s = Number(localStorage.getItem('spectraScore') || 0);
+      localStorage.setItem('spectraScore', s + 1);
+    }
+    function getScore() {
+      return Number(localStorage.getItem('spectraScore') || 0);
+    }
+
+    const encrypted = 'j|~uw0h~jshwq';
+    const correctAnswer = encrypted.split('').map(c => String.fromCharCode(c.charCodeAt(0) - 5)).join('');
+
+    const missionKey = 'mission4Solved';
+
     document.getElementById("cipherForm").addEventListener("submit", function(event) {
       event.preventDefault();
-      const answer = document.getElementById("answer").value.trim().toLowerCase();
+      const input = document.getElementById("answer").value.trim().toLowerCase();
       const result = document.getElementById("result");
-      if (answer === "crypt1center") {
-        result.innerHTML = "Correct. The lock is disabled. <a href='mission5.html'>Proceed to Mission 5</a>";
+
+      if (input === correctAnswer) {
+        if (!localStorage.getItem(missionKey)) {
+          addPoint();
+          localStorage.setItem(missionKey, 'true');
+        }
+        result.innerHTML = `✅ Correct. The lock is disabled. Current score: ${getScore()}<br><a href='mission5.html'>Proceed to Mission 5</a>`;
       } else {
-        result.textContent = "Incorrect. Try again after solving the riddle and decrypting the message.";
+        result.textContent = "❌ Incorrect. Try again after solving the riddle and decrypting the message.";
       }
     });
   </script>
