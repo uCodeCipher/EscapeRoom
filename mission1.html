@@ -44,34 +44,37 @@
   </main>
 
   <script>
-    /* ---- Disable browser back to avoid replay cheating ---- */
-    history.pushState(null, null, location.href);
-    window.onpopstate = () => history.go(1);
+    /* ---- Prevent back navigation ---- */
+    history.pushState(null, '', location.href);
+    window.addEventListener('popstate', () => history.go(1));
 
     /* ---- Score helpers ---- */
     function addPoint(){const s=Number(localStorage.getItem('spectraScore')||0);localStorage.setItem('spectraScore',s+1);} 
     function getScore(){return Number(localStorage.getItem('spectraScore')||0);} 
 
-    /* ---- Hidden correct answer (double‑layer obfuscation) ---- */
-    const cipher = 'PT1DWA=='; // reversed Base64 of 'Qg==' ("B") then re‑Base64
-    const correctAnswer = atob(atob(cipher).split('').reverse().join('')); // => "B"
+    /* ---- Obfuscated correct answer ---- */
+    // 66 ("B") XOR 23 = 85 -> store 85
+    const masked = 85;
+    const correctAnswer = String.fromCharCode(masked ^ 23); // returns "B"
 
-    let tries = 0;
+    let firstTry = true;
 
-    document.getElementById('quizForm').addEventListener('submit', e => {
+    document.getElementById('quizForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const choice = document.querySelector('input[name="email"]:checked');
       const result = document.getElementById('result');
-      if(!choice){result.textContent='Please select an option.';return;}
+      if(!choice){ result.textContent='Please select an option.'; return; }
 
-      if(choice.value===correctAnswer){
-        if(tries===0){ addPoint(); }
-        const earned = tries===0 ? '+1 point' : 'no points';
+      if(choice.value === correctAnswer){
+        if(firstTry){ addPoint(); }
+        const earned = firstTry ? '+1 point' : 'no points';
         result.innerHTML = `✅ Correct (${earned}). Current score: ${getScore()}<br><a href='mission2.html'>Continue to Mission 2</a>`;
+        // lock form
         document.querySelectorAll('input[name="email"]').forEach(el=>el.disabled=true);
-      }else{
-        tries++;
-        result.textContent='❌ Not quite. Look at the sender and the link – try again.';
+        e.target.querySelector('button').disabled = true;
+      } else {
+        firstTry = false;
+        result.textContent = '❌ Not quite. Look at the sender and the link – try again.';
       }
     });
   </script>
