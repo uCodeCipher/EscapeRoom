@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mission 4</title>
+  <title>Mission 4 – The Cipher Key</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -31,13 +31,13 @@
 
   <script>
     // --------------------------------------------------
-    //  Prevent navigating back to the previous page
+    //  Block browser back navigation
     // --------------------------------------------------
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
     // --------------------------------------------------
-    //  Helper functions for scorekeeping
+    //  Score helpers
     // --------------------------------------------------
     const addPoint = () => {
       const s = Number(localStorage.getItem('spectraScore') || 0);
@@ -49,7 +49,7 @@
     //  Cipher specifics
     // --------------------------------------------------
     const missionKey  = 'mission4Solved';
-    const SHIFT_VALUE = 3 + 'KEY'.length;          // 6
+    const SHIFT_VALUE = 3 + 'KEY'.length; // 6
     const cipherText  = document.getElementById('cipher').textContent.trim();
 
     const caesarDecode = (text, shift) =>
@@ -58,7 +58,7 @@
           const base = ch <= 'Z' ? 65 : 97;
           return String.fromCharCode((ch.charCodeAt(0) - base + shift) % 26 + base);
         }
-        return ch; // leave digits / punctuation
+        return ch;
       }).join('');
 
     const correctAnswer = caesarDecode(cipherText, SHIFT_VALUE).toLowerCase(); // crypt1center
@@ -66,18 +66,18 @@
     // --------------------------------------------------
     //  DOM references
     // --------------------------------------------------
-    const form        = document.getElementById('cipherForm');
-    const answerInput = document.getElementById('answer');
-    const submitBtn   = form.querySelector('button');
-    const result      = document.getElementById('result');
+    const form      = document.getElementById('cipherForm');
+    const answerEl  = document.getElementById('answer');
+    const submitBtn = form.querySelector('button');
+    const resultEl  = document.getElementById('result');
 
     // --------------------------------------------------
-    //  Check if mission was already solved (for this answer)
+    //  Initial state check (already solved?)
     // --------------------------------------------------
-    const alreadySolved = localStorage.getItem(missionKey) === correctAnswer;
+    const alreadySolved = localStorage.getItem(missionKey) === 'true';
 
     const showSolved = () => {
-      result.innerHTML = `✅ Correct. The lock is disabled. Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
+      resultEl.innerHTML = `✅ Correct. The lock is disabled. Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
       submitBtn.disabled = true;
     };
 
@@ -86,20 +86,20 @@
     }
 
     // --------------------------------------------------
-    //  Form submit handler
+    //  Submit handler
     // --------------------------------------------------
     form.addEventListener('submit', e => {
       e.preventDefault();
-      const input = answerInput.value.trim().toLowerCase();
+      const userInput = answerEl.value.trim().toLowerCase();
 
-      if (input === correctAnswer) {
+      if (userInput === correctAnswer) {
         if (!alreadySolved) {
           addPoint();
-          localStorage.setItem(missionKey, correctAnswer);
+          localStorage.setItem(missionKey, 'true');
         }
         showSolved();
       } else {
-        result.textContent = '❌ Incorrect. Try again after solving the riddle and decrypting the message.';
+        resultEl.textContent = '❌ Incorrect. Try again after solving the riddle and decrypting the message.';
       }
     });
   </script>
