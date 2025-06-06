@@ -44,11 +44,9 @@
   </main>
 
   <script>
-    // Prevent back navigation
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
-    // Score helpers
     function addPoint() {
       const s = Number(localStorage.getItem('spectraScore') || 0);
       localStorage.setItem('spectraScore', s + 1);
@@ -57,12 +55,9 @@
       return Number(localStorage.getItem('spectraScore') || 0);
     }
 
-   
-    const masked = 85; 
-    const correctAnswer = String.fromCharCode(masked ^ 23); // returns "B"
-
+    const masked = 85;
+    const correctAnswer = String.fromCharCode(masked ^ 23);
     const missionKey = 'mission1Tried';
-    let firstTry = !(localStorage.getItem(missionKey) === 'true');
 
     document.getElementById('quizForm').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -73,18 +68,19 @@
         return;
       }
 
+      const alreadyTried = localStorage.getItem(missionKey) === 'true';
+
       if (choice.value === correctAnswer) {
-        if (firstTry) {
+        if (!alreadyTried) {
           addPoint();
           localStorage.setItem(missionKey, 'true');
         }
-        const earned = firstTry ? '+1 point' : 'no points';
+        const earned = !alreadyTried ? '+1 point' : 'no points';
         result.innerHTML = `✅ Correct (${earned}). Current score: ${getScore()}<br><a href='mission2.html'>Continue to Mission 2</a>`;
         document.querySelectorAll('input[name="email"]').forEach(el => el.disabled = true);
         e.target.querySelector('button').disabled = true;
       } else {
         localStorage.setItem(missionKey, 'true');
-        firstTry = false;
         result.textContent = '❌ Not quite. Look at the sender and the link – try again.';
       }
     });
