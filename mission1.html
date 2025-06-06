@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mission 1 – The Email Trap</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main>
+    <h1>📧 Mission 1 – The Email Trap</h1>
+    <p>One of these emails is a phishing attempt. Can you identify the correct one?</p>
+
+    <section>
+      <h2>Email A</h2>
+      <p><strong>From:</strong> support@roblox.com<br>
+      <strong>Subject:</strong> Your Roblox password was successfully changed</p>
+      <p>We wanted to let you know that your Roblox password was changed successfully. If this wasn't you, contact us at <a href="https://www.roblox.com/support">roblox.com/support</a>.</p>
+    </section>
+
+    <section>
+      <h2>Email B</h2>
+      <p><strong>From:</strong> roblox-security@info-center.app<br>
+      <strong>Subject:</strong> 🚨Urgent: Your Roblox account is under investigation</p>
+      <p>We have detected suspicious activity on your Roblox account. <a href="#">Click here</a> to secure your account or it will be suspended in 24 hours.</p>
+    </section>
+
+    <section>
+      <h2>Email C</h2>
+      <p><strong>From:</strong> rewards@mail.roblox.com<br>
+      <strong>Subject:</strong> 🎁 You’ve earned a bonus reward from Roblox Premium</p>
+      <p>As a Premium member, you’ve earned a special bonus item. <a href="https://www.roblox.com/promo/reward?id=9082">View your reward</a>.</p>
+    </section>
+
+    <form id="quizForm">
+      <p><strong>Which email is phishing?</strong></p>
+      <label><input type="radio" name="email" value="A"> Email A</label><br>
+      <label><input type="radio" name="email" value="B"> Email B</label><br>
+      <label><input type="radio" name="email" value="C"> Email C</label><br>
+      <button type="submit">Submit</button>
+    </form>
+
+    <p id="result"></p>
+  </main>
+
+  <script>
+    document.getElementById("quizForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const answer = document.querySelector('input[name="email"]:checked');
+      const result = document.getElementById("result");
+      if (!answer) {
+        result.textContent = "Please select an option.";
+      } else if (answer.value === "B") {
+        result.innerHTML = "✅ Correct! Email B is a phishing attempt. <a href='mission2.html'>Continue to Mission 2</a>";
+      } else {
+        result.textContent = "❌ Not quite. Look at the sender and the link – try again.";
+      }
+    });
+  </script>
+</body>
+</html>
