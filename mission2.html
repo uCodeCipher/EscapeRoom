@@ -26,11 +26,9 @@
   </main>
 
   <script>
-    // Prevent back navigation
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
-    // Score helpers
     function addPoint() {
       const s = Number(localStorage.getItem('spectraScore') || 0);
       localStorage.setItem('spectraScore', s + 1);
@@ -39,13 +37,11 @@
       return Number(localStorage.getItem('spectraScore') || 0);
     }
 
-    
     const shifted = 'QIBOUPN8';
     const correctAnswer = shifted.split('').map(c =>
       String.fromCharCode(c.charCodeAt(0) - 1)
-    ).join(''); 
+    ).join('');
 
-    // Mission tried check
     const triedKey = 'mission2Tried';
     let alreadyTried = localStorage.getItem(triedKey) === 'true';
 
@@ -53,6 +49,7 @@
       event.preventDefault();
       const input = document.getElementById('answer').value.trim().toUpperCase();
       const result = document.getElementById('result');
+      const submitButton = document.querySelector('#decodeForm button');
 
       if (input === correctAnswer) {
         if (!alreadyTried) {
@@ -62,9 +59,10 @@
         } else {
           result.innerHTML = `✅ Correct, but no points awarded (already solved).<br>Current score: ${getScore()}<br><a href='mission3.html'>Continue to Mission 3</a>`;
         }
+        submitButton.disabled = true;
       } else {
         result.textContent = '❌ Incorrect. Try again after closer inspection.';
-        localStorage.setItem(triedKey, 'true'); // mark even if wrong
+        localStorage.setItem(triedKey, 'true');
       }
     });
   </script>
