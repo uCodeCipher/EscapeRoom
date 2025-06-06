@@ -33,7 +33,7 @@
     </section>
 
     <form id="quizForm">
-      <p><strong>Which email is phishing?</strong></p>
+      <p><strong>Which email is phishing?</strong> <em>(You get points only if you answer correctly on the first try!)</em></p>
       <label><input type="radio" name="email" value="A"> Email A</label><br>
       <label><input type="radio" name="email" value="B"> Email B</label><br>
       <label><input type="radio" name="email" value="C"> Email C</label><br>
@@ -44,18 +44,54 @@
   </main>
 
   <script>
-    document.getElementById("quizForm").addEventListener("submit", function(event) {
-      event.preventDefault();
-      const answer = document.querySelector('input[name="email"]:checked');
+    /* ---- Score helpers (localStorage) ---- */
+    function addPoint() {
+      const current = Number(localStorage.getItem('spectraScore') || 0);
+      localStorage.setItem('spectraScore', current + 1);
+    }
+    function getScore() {
+      return Number(localStorage.getItem('spectraScore') || 0);
+    }
+
+    /* ---- Quiz logic ---- */
+    const correctToken = 'Qg=='; // "B" in Base64, keeps answer hidden in source
+    const correctAnswer = atob(correctToken); // runtime decode
+    let tries = 0;
+
+    document.getElementById("quizForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const choice = document.querySelector('input[name="email"]:checked');
       const result = document.getElementById("result");
-      if (!answer) {
+
+      if (!choice) {
         result.textContent = "Please select an option.";
-      } else if (answer.value === "B") {
-        result.innerHTML = "✅ Correct! Email B is a phishing attempt. <a href='mission2.html'>Continue to Mission 2</a>";
+        return;
+      }
+
+      if (choice.value === correctAnswer) {
+        if (tries === 0) {
+          addPoint();
+          result.innerHTML =
+            "✅ Correct! (+1 point) Email " +
+            correctAnswer +
+            " is a phishing attempt. Current score: " +
+            getScore() +
+            "<br><a href='mission2.html'>Continue to Mission 2</a>";
+        } else {
+          result.innerHTML =
+            "✅ Correct, but no points awarded because it wasn't your first try. Current score: " +
+            getScore() +
+            "<br><a href='mission2.html'>Continue to Mission 2</a>";
+        }
+        // προαιρετικά απενεργοποιούμε το form
+        document.querySelectorAll('input[name="email"]').forEach(el => (el.disabled = true));
       } else {
-        result.textContent = "❌ Not quite. Look at the sender and the link – try again.";
+        tries += 1; // αύξησε τις προσπάθειες
+        result.textContent =
+          "❌ Not quite. Look at the sender and the link – try again.";
       }
     });
   </script>
 </body>
 </html>
+
