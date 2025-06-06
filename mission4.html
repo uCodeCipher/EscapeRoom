@@ -30,27 +30,24 @@
   </main>
 
   <script>
-    // --------------------------------------------------
-    //  Block browser back navigation
-    // --------------------------------------------------
+    // Block browser back navigation
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
-    // --------------------------------------------------
-    //  Score helpers
-    // --------------------------------------------------
-    const addPoint = () => {
+    // Score helpers
+    function addPoint() {
       const s = Number(localStorage.getItem('spectraScore') || 0);
       localStorage.setItem('spectraScore', s + 1);
-    };
-    const getScore = () => Number(localStorage.getItem('spectraScore') || 0);
+    }
+    function getScore() {
+      return Number(localStorage.getItem('spectraScore') || 0);
+    }
 
-    // --------------------------------------------------
-    //  Cipher specifics
-    // --------------------------------------------------
-    const missionKey  = 'mission4Solved';
-    const SHIFT_VALUE = 3 + 'KEY'.length; // 6
-    const cipherText  = document.getElementById('cipher').textContent.trim();
+    // Mission & cipher setup
+    const missionKey = 'mission4Solved';
+    const alreadySolved = localStorage.getItem(missionKey) === 'true';
+    const cipherText = document.getElementById('cipher').textContent.trim();
+    const SHIFT_VALUE = 3 + 'KEY'.length; // 3 + 3 = 6
 
     const caesarDecode = (text, shift) =>
       [...text].map(ch => {
@@ -63,43 +60,28 @@
 
     const correctAnswer = caesarDecode(cipherText, SHIFT_VALUE).toLowerCase(); // crypt1center
 
-    // --------------------------------------------------
-    //  DOM references
-    // --------------------------------------------------
-    const form      = document.getElementById('cipherForm');
-    const answerEl  = document.getElementById('answer');
+    // Form handler
+    const form = document.getElementById('cipherForm');
+    const inputEl = document.getElementById('answer');
+    const resultEl = document.getElementById('result');
     const submitBtn = form.querySelector('button');
-    const resultEl  = document.getElementById('result');
 
-    // --------------------------------------------------
-    //  Initial state check (already solved?)
-    // --------------------------------------------------
-    const alreadySolved = localStorage.getItem(missionKey) === 'true';
-
-    const showSolved = () => {
-      resultEl.innerHTML = `✅ Correct. The lock is disabled. Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
-      submitBtn.disabled = true;
-    };
-
-    if (alreadySolved) {
-      showSolved();
-    }
-
-    // --------------------------------------------------
-    //  Submit handler
-    // --------------------------------------------------
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const userInput = answerEl.value.trim().toLowerCase();
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const userInput = inputEl.value.trim().toLowerCase();
 
       if (userInput === correctAnswer) {
         if (!alreadySolved) {
           addPoint();
           localStorage.setItem(missionKey, 'true');
+          resultEl.innerHTML = `✅ Correct. (+1 point)<br>Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
+        } else {
+          resultEl.innerHTML = `✅ Correct, but no points awarded (already solved).<br>Current score: ${getScore()}<br><a href="mission5.html">Proceed to Mission 5</a>`;
         }
-        showSolved();
+        submitBtn.disabled = true;
       } else {
         resultEl.textContent = '❌ Incorrect. Try again after solving the riddle and decrypting the message.';
+        localStorage.setItem(missionKey, 'true'); // Optional: block replaying for cheating
       }
     });
   </script>
