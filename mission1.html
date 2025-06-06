@@ -11,29 +11,42 @@
     <h1>📧 Mission 1 – The Email Trap</h1>
     <p>One of these emails is a phishing attempt. Can you identify the correct one?</p>
 
+    <!-- Email A -->
     <section>
       <h2>Email A</h2>
       <p><strong>From:</strong> support@roblox.com<br>
       <strong>Subject:</strong> Your Roblox password was successfully changed</p>
-      <p>We wanted to let you know that your Roblox password was changed successfully. If this wasn't you, contact us at <a href="https://www.roblox.com/support">roblox.com/support</a>.</p>
+      <p>We wanted to let you know that your Roblox password was changed successfully.
+         If this wasn't you, contact us at
+         <a href="https://www.roblox.com/support">roblox.com/support</a>.
+      </p>
     </section>
 
+    <!-- Email B -->
     <section>
       <h2>Email B</h2>
       <p><strong>From:</strong> roblox-security@info-center.app<br>
       <strong>Subject:</strong> 🚨Urgent: Your Roblox account is under investigation</p>
-      <p>We have detected suspicious activity on your Roblox account. <a href="#">Click here</a> to secure your account or it will be suspended in 24 hours.</p>
+      <p>We have detected suspicious activity on your Roblox account.
+         <a href="#">Click here</a> to secure your account or it will be suspended in 24 hours.
+      </p>
     </section>
 
+    <!-- Email C -->
     <section>
       <h2>Email C</h2>
       <p><strong>From:</strong> rewards@mail.roblox.com<br>
       <strong>Subject:</strong> 🎁 You’ve earned a bonus reward from Roblox Premium</p>
-      <p>As a Premium member, you’ve earned a special bonus item. <a href="https://www.roblox.com/promo/reward?id=9082">View your reward</a>.</p>
+      <p>As a Premium member, you’ve earned a special bonus item.
+         <a href="https://www.roblox.com/promo/reward?id=9082">View your reward</a>.
+      </p>
     </section>
 
+    <!-- Quiz -->
     <form id="quizForm">
-      <p><strong>Which email is phishing?</strong> <em>(Points only for a first‑try correct pick!)</em></p>
+      <p><strong>Which email is phishing?</strong>
+         <em>(+1 point only if you’re correct on your first try!)</em>
+      </p>
       <label><input type="radio" name="email" value="A"> Email A</label><br>
       <label><input type="radio" name="email" value="B"> Email B</label><br>
       <label><input type="radio" name="email" value="C"> Email C</label><br>
@@ -44,37 +57,57 @@
   </main>
 
   <script>
-    /* ---- Prevent back navigation ---- */
+    /* ----------------- Anti-cheat back blocker ----------------- */
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => history.go(1));
 
-    /* ---- Score helpers ---- */
-    function addPoint(){const s=Number(localStorage.getItem('spectraScore')||0);localStorage.setItem('spectraScore',s+1);} 
-    function getScore(){return Number(localStorage.getItem('spectraScore')||0);} 
+    /* ----------------- Score helpers --------------------------- */
+    function addPoint () {
+      const current = Number(localStorage.getItem('spectraScore') || 0);
+      localStorage.setItem('spectraScore', current + 1);
+    }
+    function getScore () {
+      return Number(localStorage.getItem('spectraScore') || 0);
+    }
 
-    /* ---- Obfuscated correct answer ---- */
-    // 66 ("B") XOR 23 = 85 -> store 85
+    /* ----------------- Obfuscated correct answer --------------- */
+    /* 66 (“B”) XOR 23 = 85    85 αποθηκεύεται ως masked          */
     const masked = 85;
     const correctAnswer = String.fromCharCode(masked ^ 23); // returns "B"
 
+    /* Μετρητής αν είναι πρώτη προσπάθεια */
     let firstTry = true;
 
-    document.getElementById('quizForm').addEventListener('submit', (e) => {
+    /* ----------------- Quiz logic ------------------------------ */
+    document.getElementById('quizForm').addEventListener('submit', e => {
       e.preventDefault();
-      const choice = document.querySelector('input[name="email"]:checked');
-      const result = document.getElementById('result');
-      if(!choice){ result.textContent='Please select an option.'; return; }
 
-      if(choice.value === correctAnswer){
-        if(firstTry){ addPoint(); }
-        const earned = firstTry ? '+1 point' : 'no points';
-        result.innerHTML = `✅ Correct (${earned}). Current score: ${getScore()}<br><a href='mission2.html'>Continue to Mission 2</a>`;
-        // lock form
-        document.querySelectorAll('input[name="email"]').forEach(el=>el.disabled=true);
-        e.target.querySelector('button').disabled = true;
+      const choice  = document.querySelector('input[name="email"]:checked');
+      const result  = document.getElementById('result');
+      const button  = e.target.querySelector('button');
+
+      if (!choice) {
+        result.textContent = 'Please select an option.';
+        return;
+      }
+
+      if (choice.value === correctAnswer) {
+        /* ►► Δίνουμε πόντο **μόνο** στην πρώτη σωστή προσπάθεια */
+        if (firstTry) addPoint();
+
+        const earnedMsg = firstTry ? '+1 point' : 'no points';
+        result.innerHTML =
+          `✅ Correct (${earnedMsg}). Current score: ${getScore()}` +
+          `<br><a href="mission2.html">Continue to Mission 2</a>`;
+
+        /* Κλειδώνουμε επιλογές & κουμπί */
+        document.querySelectorAll('input[name="email"]').forEach(el => el.disabled = true);
+        button.disabled = true;
       } else {
+        /* Λάθος – δίνουμε άλλη ευκαιρία χωρίς πόντο */
         firstTry = false;
-        result.textContent = '❌ Not quite. Look at the sender and the link – try again.';
+        result.textContent =
+          '❌ Not quite. Look at the sender and the link, then try again.';
       }
     });
   </script>
