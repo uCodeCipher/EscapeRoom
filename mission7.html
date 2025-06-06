@@ -44,8 +44,11 @@
       return Number(localStorage.getItem('spectraScore') || 0);
     }
 
-    const encryptedCode = [103, 102, 122, 115, 109, 104, 37, 36, 119, 122, 106, 119, 102, 32];
-    const correctAnswer = encryptedCode.map(c => String.fromCharCode(c - 5)).join('').trim();
+    const encryptedCode = 'qdvjdymtbx fqlr';
+    const correctAnswer = encryptedCode.split('').map(c => {
+      return c === ' ' ? ' ' : String.fromCharCode(c.charCodeAt(0) + 5);
+    }).join('').trim();
+
     const missionKey = 'mission7Solved';
 
     document.getElementById('cipherForm').addEventListener('submit', function(event) {
