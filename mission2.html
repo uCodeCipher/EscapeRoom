@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mission 2 – Hidden in the Pixels</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main>
+    <h1>🖼️ Mission 2 – Hidden in the Pixels</h1>
+    <p>Spectra AI has hidden something inside this image. It’s not what it seems...</p>
+
+    <p>Download and investigate carefully:</p>
+    <a href="assets/secret_image.png" download>
+      <img src="assets/secret_image.png" alt="Suspicious image" width="300">
+    </a>
+
+    <form id="decodeForm">
+      <label for="answer">Enter the hidden code word:</label><br>
+      <input type="text" id="answer" name="answer" required />
+      <button type="submit">Submit</button>
+    </form>
+
+    <p id="result"></p>
+  </main>
+
+  <script>
+    document.getElementById("decodeForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const answer = document.getElementById("answer").value.trim().toUpperCase();
+      const result = document.getElementById("result");
+      if (answer === "PHANTOM7") {
+        result.innerHTML = "✅ Well done, Agent. <a href='mission3.html'>Continue to Mission 3</a>";
+      } else {
+        result.textContent = "❌ Incorrect. Try again after closer inspection.";
+      }
+    });
+  </script>
+</body>
+</html>
